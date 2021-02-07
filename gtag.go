@@ -6,8 +6,8 @@ import (
 	"fmt"
 	// "github.com/fbaube/gparse"
 	"github.com/fbaube/gtoken"
-	SU "github.com/fbaube/stringutils"
 	"github.com/fbaube/lwdx"
+	ON "github.com/fbaube/orderednodes"
 )
 
 // GTag is a generic golang XML tag, used mainly for representing XML
@@ -25,38 +25,34 @@ import (
 // `GTag` uses pointer receivers, not method receivers. <br/>
 // For its kids it uses a linked list, not a slice.
 //
-type GTag struct {
+type GTag struct { // Provide the tree structure
+	// Provife the tree structure
+	ON.Nord
 	// GToken includes Name and Attribute info for XML tags.
 	// For a simple tag that cannot be namespaced, like any
 	// "tag" in Markdown, the tag name is in GToken.GName.Local .
-	// NOTE:960 that for Markdown, we could the Attributes to store
-	// the Pandoc-style attributes used in LwDITA's MD-XP.
-	gtoken.GToken
-
-	// TODO:280 Every node needs both NAMESPACE and LANGUAGE,
+	// NOTE that for LwDITA's Markdown-XP, we could use the
+	// Attributes to store the Pandoc-style attributes.
+	// TODO: Every node needs both NAMESPACE and LANGUAGE,
 	// because they are inherited.
+	gtoken.GToken
+	// MatchingTagsIndex is used for tags only,
+	// i.e. "SE", "EE" in LwDITA, HTML5, XML.
+	// MatchingTagsIndex int
 
-	// Fields used for tags only (LwDITA, HTML5, XML; i.e. "SE", "EE")
-	// Depth, MatchingTagsIndex int
-
-	// TODO:790 This data can and should be moved elsewhere
+	// TODO TagSummary can and should be moved elsewhere
 	lwdx.TagSummary
-
-	// Provide the tree structure
-	GNode
-
 	// This bool field is used for XML ENTITYs only. It indicates whether the
 	// entity defined using a "%" or not. This distinguishes a parameter/DTD
 	// entity from a general/data entity. This is recorded during parsing,
 	// for later use when we fully process the entity declaration.
 	EntityIsParameter bool
-
 	// These two bool fields used only where entity references ( &name; %name; )
 	// are legal.
 	hadEntities      bool
 	stillHasEntities bool
 
-	// NOTE:310 Maybe add these in the future.
+	// NOTE Maybe add these in the future.
 	// D+T of last mod
 	// D+T of last mod of subtrees (propagates upward)
 	// IsExpanded bool (GUI helper)
@@ -68,16 +64,6 @@ type GTag struct {
 
 // Make sure that assignments to/from root node are explicit.
 type GRootTag GTag
-
-// FirstKid provides read-only access for other packages.
-func (p *GTag) FirstKid() *GTag {
-	return p.firstKid
-}
-
-// NextKid provides read-only access for other packages.
-func (p *GTag) NextKid() *GTag {
-	return p.nextKid
-}
 
 // NewGTag initializes the node with parser results.
 func NewGTag(aNS, aName string) *GTag {
@@ -92,7 +78,7 @@ func (anE *GTag) NewKid(aNS, aName string) *GTag {
 	if anE == nil {
 		panic("NewKid got nil parent")
 	}
-	return anE.AddKid(NewGTag(aNS, aName))
+	return anE.AddKid(NewGTag(aNS, aName)).(*GTag)
 }
 
 // Echo implements Markupper.
@@ -105,41 +91,11 @@ func (p GTag) String() string {
 	var s = p.GToken.Echo() +
 		// fmt.Sprintf(" [d%d:%d] ", p.Depth, p.MatchingTagsIndex) +
 		fmt.Sprintf(" [d%d] ", p.Depth) + p.TagSummary.String()
-		// p.GNode.String()
+	// p.Nord.String()
 	/*
 		EntityIsParameter bool
 		hadEntities      bool
 		stillHasEntities bool
 	*/
 	return s
-}
-
-// StringRecursively is fab.
-func (p GTag) StringRecursively(s string, iLvl int) string {
-
-	s += SU.GetIndent(iLvl) + p.String() + "\n" // p.GToken.Echo() +
-	// fmt.Sprintf(" d%d::[%d] ", p.Depth, p.MatchingTagsIndex) +
-	// p.TagSummary.String() + "\n"
-	var kids []*GTag
-	kids = p.KidsAsSlice()
-	for _, k := range kids {
-		s += k.StringRecursively(s, iLvl+1)
-	}
-
-	/*
-		EntityIsParameter bool
-		hadEntities      bool
-		stillHasEntities bool
-	*/
-	return s
-}
-
-func (p *GTag) KidsAsSlice() []*GTag {
-	var pp []*GTag
-	c := p.firstKid
-	for c != nil {
-		pp = append(pp, c)
-		c = c.nextKid
-	}
-	return pp
 }
