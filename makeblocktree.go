@@ -56,14 +56,14 @@ func (pGT *GTree) MakeBlockTree(W io.Writer) error {
 		nextTag = pGT.GTags[i]
 		switch pTag.GTagTokType {
 
-		case "SE": // StartElement  // could be: <t
+		case "Elm": // StartElement  // could be: <t
 			openTag.AddKid(nextTag)
 			openTag = nextTag
-		case "EE": // EndElement     // could be: t>
+		case "end": // EndElement     // could be: t>
 			openTag = openTag.GetParent()
-		case "CD": // CDATA          // could be: CD
+		case "ChD": // CDATA          // could be: CD
 			// openTag.AddKid()
-		case "PI": // Proc. Instr.   // could be: <?
+		case "PrI": // Proc. Instr.   // could be: <?
 		case "Cmt": // XML comment   // could be: --
 		case "Dir": // XML directive // could be: <!
 			// The following are actually DIRECTIVE SUBTYPES, but they

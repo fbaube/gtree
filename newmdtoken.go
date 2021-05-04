@@ -90,7 +90,7 @@ func NewGTagFromMDtoken(M MD.Token) (*GTag, error) {
 
 func StartTagMD(tag string) *GTag {
 	var pTag = new(GTag)
-	pTag.TTType = "SE"
+	pTag.TTType = "Elm"
 	pTag.Keyword = tag
 	// pTag.AsString = "<" + tag + ">"
 	// nOpenTags++
@@ -99,7 +99,7 @@ func StartTagMD(tag string) *GTag {
 
 func EndTagMD(tag string) *GTag {
 	var pTag = new(GTag)
-	pTag.TTType = "EE"
+	pTag.TTType = "end"
 	pTag.Keyword = tag
 	// pTag.AsString = "</" + tag + ">"
 	// nOpenTags++
@@ -108,7 +108,7 @@ func EndTagMD(tag string) *GTag {
 
 func CDataTagMD(content string) *GTag {
 	var pTag = new(GTag)
-	pTag.TTType = "CD"
+	pTag.TTType = "ChD"
 	/*
 		pTag.AsString = S.TrimSpace(content)
 		pTag.Keyword = pTag.AsString

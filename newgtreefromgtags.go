@@ -22,7 +22,7 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 	for i, pTag = range GEs {
 		atRootLevel := (pGT.NrOpenTags == 0)
 
-		if pTag.TTType == "SE" {
+		if pTag.TTType == "Elm" {
 			// println("SE.kwd:", pTag.GName.String())
 			pGT.Tagstack.Push(NewTagentry(pTag.GName.String(), i))
 			// println("Pušt", i, pTag.GName.String())
@@ -48,7 +48,7 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 				}
 			}
 		}
-		if pTag.TTType == "EE" {
+		if pTag.TTType == "end" {
 			if atRootLevel {
 				elog.Printf("Unmatched top-level end tag <%s>", pTag.Keyword)
 				panic("Unmatched top-level end tag: " + pTag.Keyword)

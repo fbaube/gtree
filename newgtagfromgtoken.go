@@ -23,7 +23,7 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 
 	switch pTag.TTType {
 
-	case "SE":
+	case "Elm":
 		// pTag.Depth = NrOpenTags
 		// NrOpenTags++
 		var TT lwdx.TagSummary
@@ -37,7 +37,7 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 		pTag.TagSummary = TT
 		return pTag, nil
 
-	case "EE":
+	case "end":
 		// NrOpenTags--
 		// pTag.Depth = NrOpenTags
 		var TT lwdx.TagSummary
@@ -48,14 +48,14 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 		pTag.TagSummary = TT
 		return pTag, nil
 
-	case "PI":
+	case "PrI":
 		pTag.TagSummary = lwdx.TTblock
 		// TODO:140 Attach this PI to its parent element in the GTree
 		// newNode = parentNode.NewKid("<?", myTarget)
 		// newNode.StringValue = myInst
 		return pTag, nil
 
-	case "CD":
+	case "ChD":
 		if pTag.Echo() == "" {
 			// ilog.Printf("PCDATA is all whitespace: \n")
 			// DO NOTHING

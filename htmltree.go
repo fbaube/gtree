@@ -3,10 +3,10 @@ package gtree
 import (
 	"fmt"
 
-	"golang.org/x/net/html"
 	"github.com/fbaube/gtoken"
 	"github.com/fbaube/lwdx"
 	SU "github.com/fbaube/stringutils"
+	"golang.org/x/net/html"
 	// "github.com/dimchansky/utfbom"
 )
 
@@ -23,7 +23,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 
 	switch GT.TTType {
 
-	case "SE":
+	case "Elm":
 		// Create new GTag. Input:
 		// type StartElement struct { Name Name ; Attr []Attr }
 		// type Attr struct { Name  Name ; Value string }
@@ -42,7 +42,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// pTag.TagType = TT
 		return pTag, nil
 
-	case "EE":
+	case "end":
 		// pRT.pTag = nil // !!
 		// type EndElement struct { Name Name }
 		pTag.Keyword = TS
@@ -60,7 +60,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		*/
 		return pTag, nil
 
-	case "CD":
+	case "ChD":
 		// We seem to have trouble making a genuine copy of the string.
 		// So, take an extra step or two to make sure it is correct.
 		// pTag.AsString = TS
