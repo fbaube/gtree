@@ -89,7 +89,7 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 		return nil, fmt.Errorf("NIL GToken.type<%s> for: %+v", GT.TTType, GT)
 
 	case "Doc":
-		println("--> Made GTag for Doc GToken") // , GT.String())
+		println("--> Made GTag for GToken TTType <Doc>") // , GT.String())
 		pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
