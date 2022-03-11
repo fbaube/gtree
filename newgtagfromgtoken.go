@@ -7,6 +7,7 @@ import (
 	"github.com/fbaube/lwdx"
 	// "github.com/dimchansky/utfbom"
 	// "github.com/pkg/errors"
+	L "github.com/fbaube/mlog"
 )
 
 // NewGTagFromGToken embeds the GToken and processes it.
@@ -89,7 +90,7 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 		return nil, fmt.Errorf("NIL GToken.type<%s> for: %+v", GT.TTType, GT)
 
 	case "Doc":
-		println("--> Made GTag for GToken TTType <Doc>") // , GT.String())
+		L.L.Dbg("Made GTag for GToken TTType <Doc>") 
 		pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
