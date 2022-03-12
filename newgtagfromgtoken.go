@@ -6,7 +6,6 @@ import (
 	"github.com/fbaube/gtoken"
 	"github.com/fbaube/lwdx"
 	// "github.com/dimchansky/utfbom"
-	// "github.com/pkg/errors"
 	L "github.com/fbaube/mlog"
 )
 
@@ -30,8 +29,12 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 		var TT lwdx.TagSummary
 		var ok bool
 		if TT, ok = lwdx.TagSummaries[pTag.GToken.GName.Local]; !ok {
-			ilog.Printf("Unrecognized tag: <" + pTag.Keyword + ">")
-			// TODO:1210 reinstate this next error, and change the above "ilog"
+			if pTag.Keyword == "" {
+				L.L.Warning("Missing tag")
+			} else {
+				L.L.Warning("Unrecognized tag: <" + pTag.Keyword + ">")
+			}
+			// TODO: reinstate this next error, and change the above "ilog"
 			//      to "elong", when we can simply warn for DITA 1.3 tags
 			// return pTag, errors.New("Unrecognized tag: <" + pTag.Keytext + ">")
 		}

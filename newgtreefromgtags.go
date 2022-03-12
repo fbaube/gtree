@@ -2,13 +2,15 @@ package gtree
 
 // "github.com/dimchansky/utfbom"
 
+import L "github.com/fbaube/mlog"
+
 // NewGTreeFromGTags is TBS.
 //
-// TODO:320 FIXME Check that root Tag matches DOCTYPE.
-// TODO:430 FIXME Provide a slice of dirpaths, for resolving external IDs.
-// TODO:400 FIXME Multiple root Tags, set Xml contype to Fragment
-// TODO:350 FIXME If has DOCTYPE, set XML contype to document (unless is Fragment)
-// TODO:380 FIXME If has LwDITA DOCTYPE, set DITA contype.
+// TODO: FIXME Check that root Tag matches DOCTYPE.
+// TODO: FIXME Provide a slice of dirpaths, for resolving external IDs.
+// TODO: FIXME Multiple root Tags, set Xml contype to Fragment
+// TODO: FIXME If has DOCTYPE, set XML contype to document (unless is Fragment)
+// TODO: FIXME If has LwDITA DOCTYPE, set DITA contype.
 //
 func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 
@@ -38,7 +40,7 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 				} else {
 					// Problem
 					pGT.RootTagCount++
-					elog.Printf("Got another root element <%s>", pTag.GToken.GName)
+					L.L.Error("Got another root element <%s>", pTag.GToken.GName)
 					println("==> Got second root element <", pTag.GToken.GName.String(),
 						">: XML data file is a fragment")
 					if pTag.GName.String() != GEs[pGT.RootTagIndex].GName.String() {
@@ -50,13 +52,13 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 		}
 		if pTag.TTType == "end" {
 			if atRootLevel {
-				elog.Printf("Unmatched top-level end tag <%s>", pTag.Keyword)
+				L.L.Error("Unmatched top-level end tag <%s>", pTag.Keyword)
 				panic("Unmatched top-level end tag: " + pTag.Keyword)
 			}
 			TE := pGT.Tagstack.Pop()
 			// println("Popt", i, "::", TE.Index(), TE.Tag())
 			if TE.Tag() != pTag.GName.String() {
-				elog.Printf("Tag mismatch: |(start-tag)|%s|v|(end-tag)|%s|>",
+				L.L.Error("Tag mismatch: |(start-tag)|%s|v|(end-tag)|%s|>",
 					TE.Tag(), pTag.GName.String())
 				panic("Bad tag stack: " + TE.Tag() + " v " + pTag.GName.String())
 			}

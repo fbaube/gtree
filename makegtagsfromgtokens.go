@@ -1,10 +1,9 @@
 package gtree
 
 import (
-	"fmt"
-
 	"github.com/fbaube/gtoken"
 	// "github.com/dimchansky/utfbom"
+	L "github.com/fbaube/mlog"
 )
 
 func MakeGTagsFromGTokens(GTs []*gtoken.GToken) (GEs []*GTag, err error) {
@@ -31,8 +30,7 @@ func MakeGTagsFromGTokens(GTs []*gtoken.GToken) (GEs []*GTag, err error) {
 		}
 		if e != nil { // pTag is nil
 			// fmt.Sprintf()
-			elog.Printf("NewGTreeFromXMLtoken: failed: %s", e.Error())
-			fmt.Printf("NewGTreeFromXMLtoken: failed: %s", e.Error())
+			L.L.Error("NewGTreeFromXMLtoken: failed: %s", e.Error())
 			continue
 		}
 		// pTag is not nil
