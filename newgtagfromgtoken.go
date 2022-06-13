@@ -9,15 +9,42 @@ import (
 	L "github.com/fbaube/mlog"
 )
 
+/*
+type GTag struct { // Provide the tree structure
+        ON.Nord
+        gtoken.GToken
+type GToken struct {
+		BaseToken interface{}
+        Depth     int
+        XU.FilePosition
+        IsBlock, IsInline bool
+        // GTagTokType enumerates the types of struct `GToken` and also the types of
+        // struct `GTag`, which are a strict superset. Therefore the two structs use
+        // a shared "type" enumeration. <br/>
+        // NOTE "end" (`EndElement`) is maybe (but probably not) OK for a `GToken.Type`
+        // but certainly not for a `GTag.Type`, cos the existence of a matching
+        // `EndElement` for every `StartElement` should be assumed (but need not
+        // actually be present when depth info is available) in a valid `GTree`.
+        TTType
+        // GName is for XML "Elm" & "end" *only* // GElmName? GTagName?
+        GName
+        // GAtts is for XML "Elm" *only*, and HTML, and (with some finagling) MKDN
+        GAtts
+        // Keyword is for XML ProcInst "PrI" & Directive "Dir", *only*
+        Keyword string
+        // Otherwords is for all *except* "Elm" and "end"
+        Otherwords string
+*/
+
 // NewGTagFromGToken embeds the GToken and processes it.
-// NOTE:390 Returns (`nil,nil`) if the token is valid but useless, and
+// NOTE: Returns (`nil,nil`) if the token is valid but useless, and
 // should be skipped, i.e. an `xml.CharData` that is all whitespace.
 func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 	pTag = new(GTag)
 	pTag.GToken = GT
 
 	if "" == pTag.TTType {
-		// println("NewGTagFromGToken: NIL")
+		println("NewGTagFromGToken: EMPTY TTType")
 		return nil, nil
 	}
 
@@ -29,6 +56,8 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 		var TT lwdx.TagSummary
 		var ok bool
 		if TT, ok = lwdx.TagSummaries[pTag.GToken.GName.Local]; !ok {
+			L.L.Dbg("GToken: %+v", GT)
+			// L.L.Dbg("GTag: %+v", *pTag)
 			if pTag.Keyword == "" {
 				L.L.Warning("Missing tag")
 			} else {
@@ -93,7 +122,7 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 		return nil, fmt.Errorf("NIL GToken.type<%s> for: %+v", GT.TTType, GT)
 
 	case "Doc":
-		L.L.Dbg("Made GTag for GToken TTType <Doc>") 
+		L.L.Dbg("Made GTag for GToken TTType <Doc>")
 		pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
