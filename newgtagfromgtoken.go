@@ -44,7 +44,7 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 	pTag.GToken = GT
 
 	if "" == pTag.TTType {
-		println("NewGTagFromGToken: EMPTY TTType")
+		L.L.Info("NewGTagFromGToken: EMPTY TTType")
 		return nil, nil
 	}
 
