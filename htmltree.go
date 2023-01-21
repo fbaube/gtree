@@ -4,17 +4,18 @@ import (
 	"fmt"
 
 	"github.com/fbaube/gtoken"
-	"github.com/fbaube/lwdx"
+	// "github.com/fbaube/lwdx"
 	SU "github.com/fbaube/stringutils"
 	"golang.org/x/net/html"
 	// "github.com/dimchansky/utfbom"
 )
 
 // NewGTagFromHtmltoken is TODO.
-// TODO:620 Pass a writer for Echo.
-// NOTE:370 Returns "nil" if the token is valid but useless, and can
+// TODO: Pass a writer for Echo.
+// NOTE: Returns "nil" if the token is valid but useless, and can
 // be skipped, such as an xml.CharData that is all whitespace;
-// NOTE:1000 that it might cause problems.
+// NOTE: that it might cause problems.
+// .
 func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 	pTag = new(GTag)
 	var TS string
@@ -80,7 +81,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 			} */
 		// fmt.Printf("%s(cdata)|%s|\n",
 		// 	SU.GetIndent(0/*pET.NrOpenTags*/), pTag.AsString)
-		pTag.TagSummary = lwdx.TTinline
+		// !! pTag.TagSummary = lwdx.TTinline
 		return pTag, nil
 
 	case "Cmt":
@@ -89,7 +90,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// println("ok:", pTag.AsString) // " <--|" + pRT.string1 + "|--> \n")
 		// newNode = parentNode.NewKid("<!", "--")
 		// newNode.StringValue = tokenString
-		pTag.TagSummary = lwdx.TTblock
+		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
 	case "Dir":
@@ -99,12 +100,12 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// println("ok:", pTag.AsString) // " <!|" + pRT.string1 + "|" + pRT.string2 + "|> \n")
 		// newNode = parentNode.NewKid("<!", "DOCTYPE")
 		// newNode.StringValue = tokenString
-		pTag.TagSummary = lwdx.TTblock
+		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
 	default:
 		pTag.TTType = "ERR"
-		pTag.TagSummary = lwdx.TTblock
+		// !! pTag.TagSummary = lwdx.TTblock
 		return nil, fmt.Errorf("Unrecognized token type<%T> for: %+v", T, T)
 	}
 }

@@ -55,7 +55,7 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 		// NrOpenTags++
 		var TT lwdx.TagSummary
 		var ok bool
-		if TT, ok = lwdx.TagSummaries[pTag.GToken.GName.Local]; !ok {
+		if TT, ok = lwdx.TagInfo[pTag.GToken.GName.Local]; !ok {
 			L.L.Dbg("GToken: %+v", GT)
 			// L.L.Dbg("GTag: %+v", *pTag)
 			if pTag.Keyword == "" {
@@ -75,15 +75,15 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 		// pTag.Depth = NrOpenTags
 		var TT lwdx.TagSummary
 		var ok bool
-		if TT, ok = lwdx.TagSummaries[pTag.Keyword]; !ok {
+		if TT, ok = lwdx.TagInfo[pTag.Keyword]; !ok {
 			// TODO
 		}
 		pTag.TagSummary = TT
 		return pTag, nil
 
 	case "PrI":
-		pTag.TagSummary = lwdx.TTblock
-		// TODO:140 Attach this PI to its parent element in the GTree
+		// !! pTag.TagSummary = lwdx.TTblock
+		// TODO: Attach this PI to its parent element in the GTree
 		// newNode = parentNode.NewKid("<?", myTarget)
 		// newNode.StringValue = myInst
 		return pTag, nil
@@ -98,38 +98,38 @@ func NewGTagFromGToken(GT gtoken.GToken) (pTag *GTag, e error) {
 			// println("WARNING: Got an all-whitespace xml.CharData")
 			return nil, nil
 		}
-		pTag.TagSummary = lwdx.TTinline
+		// !! pTag.TagSummary = lwdx.TTinline
 		return pTag, nil
 
 	case "Cmt":
-		// TODO:130 Attach this Comment to its parent element in the GTree,
+		// TODO: Attach this Comment to its parent element in the GTree,
 		// which is in fact the first XML element that follows this XML
 		// comment. So, it should be done in a later pass.
 		// newNode = parentNode.NewKid("<!", "--")
 		// newNode.StringValue = tokenString
-		pTag.TagSummary = lwdx.TTblock
+		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
 	case "Dir":
-		pTag.TagSummary = lwdx.TTblock
+		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
 	case "":
 		print(GT.String())
 		pTag.TTType = "ERR"
-		pTag.TagSummary = lwdx.TTblock
+		// !! pTag.TagSummary = lwdx.TTblock
 		// println(fmt.Sprintf("NIL GToken.type<%s> for: %+v", GT.TTType, GT))
 		return nil, fmt.Errorf("NIL GToken.type<%s> for: %+v", GT.TTType, GT)
 
 	case "Doc":
 		L.L.Dbg("Made GTag for GToken TTType <Doc>")
-		pTag.TagSummary = lwdx.TTblock
+		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
 	default:
 		print(GT.String())
 		pTag.TTType = "ERR"
-		pTag.TagSummary = lwdx.TTblock
+		// !! pTag.TagSummary = lwdx.TTblock
 		println(fmt.Sprintf("Unrecognized GToken.type<%s> for: %+v",
 			GT.TTType, GT))
 		return nil, fmt.Errorf("Unrecognized GToken.type<%s> for: %+v",
