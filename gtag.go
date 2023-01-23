@@ -12,27 +12,32 @@ import (
 
 // GTag is a generic golang XML tag, used mainly for representing XML
 // tags (or their Markdown equivalents) in a mixed content document.
-// Child elements (called "Kids") are referenced by the embedded `GNode`.
+// Child elements (called "Kids") are referenced by the embedded [Nord].
 //
-// (`GTag` might also be useful tho for holding multi-level attribute
-// info in DTDs, but then again we also define a very different `DTag`.)
+// Note that this is the appropriate struct for indicating block/inline,
+// via func [IsBlock].
 //
-// `GTag` is also used to represent non-tag XML items, including PIs,
-// Comments, Directives, and CDATA character data items. Therefore a
-// GTag is created for every XML token (even EndElement's), and they
-// are linked into a tree structure (a `GTree`).
+// (GTag might also be useful tho for holding multi-level attribute
+// info in DTDs, but then again we also define a very different [DTag].)
 //
-// `GTag` uses pointer receivers, not method receivers. <br/>
+// GTag is also used to represent non-tag XML items, including PIs,
+// Comments, Directives, and CDATA character data items. Therefore
+// a GTag is created for every XML token (even [EndElement]s), and
+// they are linked into a tree structure (a GTree).
+//
+// GTag uses pointer receivers, not method receivers. <br/>
 // For its kids it uses a linked list, not a slice.
-//
-type GTag struct { // Provide the tree structure
-	// Provife the tree structure
+// .
+type GTag struct {
+	// Nord provides tree structure
 	ON.Nord
-	// GToken includes Name and Attribute info for XML tags.
-	// For a simple tag that cannot be namespaced, like any
-	// "tag" in Markdown, the tag name is in GToken.GName.Local .
-	// NOTE that for LwDITA's Markdown-XP, we could use the
-	// Attributes to store the Pandoc-style attributes.
+	// [GToken] includes Name and Attribute info for XML
+	// tags. For a simple tag that cannot be namespaced,
+	// such as a "tag" in Markdown, the tag name is in
+	// [GToken.GName.Local].
+	//
+	// NOTE: For LwDITA's Markdown-XP, we could use
+	// the Attributes to store Pandoc-style attributes.
 	// TODO: Every node needs both NAMESPACE and LANGUAGE,
 	// because they are inherited.
 	gtoken.GToken
@@ -40,15 +45,16 @@ type GTag struct { // Provide the tree structure
 	// i.e. "SE", "EE" in LwDITA, HTML5, XML.
 	// MatchingTagsIndex int
 
-	// TODO TagSummary can and should be moved elsewhere
+	// TODO: Should TagSummary be moved elsewhere ?
 	lwdx.TagSummary
-	// This bool field is used for XML ENTITYs only. It indicates whether the
-	// entity defined using a "%" or not. This distinguishes a parameter/DTD
-	// entity from a general/data entity. This is recorded during parsing,
-	// for later use when we fully process the entity declaration.
+	// EntityIsParameter is a bool field used for XML ENTITYs only.
+	// It indicates whether the entity defined using a "%" or not.
+	// This distinguishes a parameter/DTD entity from a general/data
+	// entity. This is recorded during parsing, for later use when
+	// we fully process the entity declaration.
 	EntityIsParameter bool
-	// These two bool fields used only where entity references ( &name; %name; )
-	// are legal.
+	// These two bool fields used only where entity references
+	// ( &name; %name; ) are legal.
 	hadEntities      bool
 	stillHasEntities bool
 
@@ -62,7 +68,15 @@ type GTag struct { // Provide the tree structure
 	// SizeAll     int (incl. subtrees)
 }
 
-// Make sure that assignments to/from root node are explicit.
+// IsBlock needs to check for which schema, because some tags occur
+// in multiple schemata but with differing values for block/inline.
+// .
+func (p *GTag) IsBlock() bool {
+	return p.TagSummary.LwditaMode == "BLOCK" ||
+		p.TagSummary.Html5Mode == "BLOCK"
+}
+
+// GRootTag makes sure that assignments to/from a root node are explicit.
 type GRootTag GTag
 
 // NewGTag initializes the node with parser results.
@@ -88,14 +102,13 @@ func (p *GTag) Echo() string {
 
 // String implements Markupper.
 func (p GTag) String() string {
+	var sBlk string
+	if p.IsBlock() {
+		sBlk = "(BLK) "
+	}
 	var s = p.GToken.Echo() +
 		// fmt.Sprintf(" [d%d:%d] ", p.Depth, p.MatchingTagsIndex) +
-		fmt.Sprintf(" [d%d] ", p.Depth) + p.TagSummary.String()
+		fmt.Sprintf(" [d%d] %s", p.Depth, sBlk) + p.TagSummary.String()
 	// p.Nord.String()
-	/*
-		EntityIsParameter bool
-		hadEntities      bool
-		stillHasEntities bool
-	*/
 	return s
 }

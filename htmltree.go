@@ -18,6 +18,8 @@ import (
 // .
 func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 	pTag = new(GTag)
+	// pTkn := &(pTag.GToken)
+
 	var TS string
 	var GT *gtoken.GToken
 	GT, e = NewGTokenFromHtmlToken(T)
