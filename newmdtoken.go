@@ -1,5 +1,7 @@
 package gtree
 
+import "github.com/fbaube/gtoken"
+
 /*
 
 func NewGTagFromMDtoken(M MD.Token) (*GTag, error) {
@@ -90,8 +92,8 @@ func NewGTagFromMDtoken(M MD.Token) (*GTag, error) {
 
 func StartTagMD(tag string) *GTag {
 	var pTag = new(GTag)
-	pTag.TTType = "Elm"
-	pTag.Keyword = tag
+	pTag.TTType = gtoken.TT_type_ELMNT
+	pTag.TagOrPrcsrDrctv = tag
 	// pTag.AsString = "<" + tag + ">"
 	// nOpenTags++
 	return pTag
@@ -99,8 +101,8 @@ func StartTagMD(tag string) *GTag {
 
 func EndTagMD(tag string) *GTag {
 	var pTag = new(GTag)
-	pTag.TTType = "end"
-	pTag.Keyword = tag
+	pTag.TTType = gtoken.TT_type_ENDLM
+	pTag.TagOrPrcsrDrctv = tag
 	// pTag.AsString = "</" + tag + ">"
 	// nOpenTags++
 	return pTag
@@ -108,7 +110,7 @@ func EndTagMD(tag string) *GTag {
 
 func CDataTagMD(content string) *GTag {
 	var pTag = new(GTag)
-	pTag.TTType = "ChD"
+	pTag.TTType = gtoken.TT_type_CDATA
 	/*
 		pTag.AsString = S.TrimSpace(content)
 		pTag.Keyword = pTag.AsString

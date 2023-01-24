@@ -118,7 +118,7 @@ func NewGTagFromBFnode(p AST.Node) *GTag {
 	NK = p.Kind()
 	var pp *GTag
 	pp = new(GTag)
-	pp.TTType = "Elm"
+	pp.TTType = gtoken.TT_type_ELMNT
 	sKids := ListKids(p)
 	fmt.Printf("New GTag :: type %d :: kind %d :: %s \n", NT, NK, sKids)
 

@@ -26,17 +26,17 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 
 	switch GT.TTType {
 
-	case "Elm":
+	case gtoken.TT_type_ELMNT:
 		// Create new GTag. Input:
 		// type StartElement struct { Name Name ; Attr []Attr }
 		// type Attr struct { Name  Name ; Value string }
 		// pTag.GStartTag = *new(gparse.GToken.GName)
 		// pTag.GStartTag.Name.Local = TS
-		pTag.Keyword = TS
+		pTag.TagOrPrcsrDrctv = TS
 		// pTag.AsString = pTag.GStartTag.String() // include "<" and ">"
 		// pTag.Depth  = pET.NrOpenTags
 		fmt.Printf("cnvt: %s<%s>\n",
-			SU.GetIndent(0 /*pET.NrOpenTags*/), pTag.Keyword)
+			SU.GetIndent(0 /*pET.NrOpenTags*/), pTag.TagOrPrcsrDrctv)
 		// pET.NrOpenTags++
 		// if TT, ok = lwdx.TagTypes[pTag.keynoun]; !ok {
 		// elog.Printf("Unrecognized tag: <" + pTag.keynoun + ">")
@@ -45,15 +45,15 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// pTag.TagType = TT
 		return pTag, nil
 
-	case "end":
+	case gtoken.TT_type_ENDLM:
 		// pRT.pTag = nil // !!
 		// type EndElement struct { Name Name }
-		pTag.Keyword = TS
-		// pTag.AsString = "</" + pTag.Keyword + ">"
+		pTag.TagOrPrcsrDrctv = TS
+		// pTag.AsString = "</" + pTag.TagOrPrcsrDrctv + ">"
 		// pET.NrOpenTags--
 		// pTag.Depth  = pET.NrOpenTags
 		fmt.Printf("%s</%s>\n",
-			SU.GetIndent(0 /*pET.NrOpenTags*/), pTag.Keyword)
+			SU.GetIndent(0 /*pET.NrOpenTags*/), pTag.TagOrPrcsrDrctv)
 		/*
 			var TT lwdx.TagType
 			var ok bool
@@ -63,7 +63,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		*/
 		return pTag, nil
 
-	case "ChD":
+	case gtoken.TT_type_CDATA:
 		// We seem to have trouble making a genuine copy of the string.
 		// So, take an extra step or two to make sure it is correct.
 		// pTag.AsString = TS
@@ -86,19 +86,19 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// !! pTag.TagSummary = lwdx.TTinline
 		return pTag, nil
 
-	case "Cmt":
-		pTag.Keyword = TS
-		// pTag.AsString = "<--" + pTag.Keyword + "-->"
+	case gtoken.TT_type_COMNT:
+		pTag.TagOrPrcsrDrctv = TS
+		// pTag.AsString = "<--" + pTag.TagOrPrcsrDrctv + "-->"
 		// println("ok:", pTag.AsString) // " <--|" + pRT.string1 + "|--> \n")
 		// newNode = parentNode.NewKid("<!", "--")
 		// newNode.StringValue = tokenString
 		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
-	case "Dir":
+	case gtoken.TT_type_DRCTV:
 		s := TS
 		// pTag.AsString = "<!" + s + ">"
-		pTag.Keyword, pTag.Otherwords = SU.SplitOffFirstWord(s) // pRT.string1)
+		pTag.TagOrPrcsrDrctv, pTag.Datastring = SU.SplitOffFirstWord(s) // pRT.string1)
 		// println("ok:", pTag.AsString) // " <!|" + pRT.string1 + "|" + pRT.string2 + "|> \n")
 		// newNode = parentNode.NewKid("<!", "DOCTYPE")
 		// newNode.StringValue = tokenString
@@ -106,7 +106,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		return pTag, nil
 
 	default:
-		pTag.TTType = "ERR"
+		pTag.TTType = gtoken.TT_type_ERROR
 		// !! pTag.TagSummary = lwdx.TTblock
 		return nil, fmt.Errorf("Unrecognized token type<%T> for: %+v", T, T)
 	}

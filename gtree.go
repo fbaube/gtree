@@ -41,7 +41,6 @@ import (
 //
 // TODO:540 Make sure that comments are properly associated with markup tags
 // (XML document data) and markup declarations (DTD stuff).
-//
 type GTree struct {
 	// This data structure should know where its own root tag is, but
 	// try not to use this field a lot because it might be redundant.
@@ -68,6 +67,14 @@ type GTree struct {
 	// -   HTML content files:   html / (5|4) [/TBD]
 	// - Parsed  schema files: schema / dtd / (root Tag)
 	// MCMtype []string
+}
+
+func (T *GTree) EchoTo(w io.Writer) {
+	// w.Write([]byte(T.Echo()))
+}
+
+func (et GTree) String() string {
+	return "GTree!" // /* "dbg." + */ et.String()
 }
 
 /*
@@ -134,11 +141,3 @@ func (pGF gfile.GFile) EchoGTree() string {
 	return sb.String()
 }
 */
-
-func (T *GTree) EchoTo(w io.Writer) {
-	// w.Write([]byte(T.Echo()))
-}
-
-func (et GTree) String() string {
-	return "GTree!" // /* "dbg." + */ et.String()
-}

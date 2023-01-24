@@ -2,7 +2,10 @@ package gtree
 
 // "github.com/dimchansky/utfbom"
 
-import L "github.com/fbaube/mlog"
+import (
+	"github.com/fbaube/gtoken"
+	L "github.com/fbaube/mlog"
+)
 
 // NewGTreeFromGTags is TBS.
 //
@@ -11,7 +14,6 @@ import L "github.com/fbaube/mlog"
 // TODO: FIXME Multiple root Tags, set Xml contype to Fragment
 // TODO: FIXME If has DOCTYPE, set XML contype to document (unless is Fragment)
 // TODO: FIXME If has LwDITA DOCTYPE, set DITA contype.
-//
 func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 
 	// var e error
@@ -24,7 +26,7 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 	for i, pTag = range GEs {
 		atRootLevel := (pGT.NrOpenTags == 0)
 
-		if pTag.TTType == "Elm" {
+		if pTag.TTType == gtoken.TT_type_ELMNT {
 			// println("SE.kwd:", pTag.GName.String())
 			pGT.Tagstack.Push(NewTagentry(pTag.GName.String(), i))
 			// println("Pušt", i, pTag.GName.String())
@@ -50,10 +52,10 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 				}
 			}
 		}
-		if pTag.TTType == "end" {
+		if pTag.TTType == gtoken.TT_type_ENDLM {
 			if atRootLevel {
-				L.L.Error("Unmatched top-level end tag <%s>", pTag.Keyword)
-				panic("Unmatched top-level end tag: " + pTag.Keyword)
+				L.L.Error("Unmatched top-level end tag <%s>", pTag.TagOrPrcsrDrctv)
+				panic("Unmatched top-level end tag: " + pTag.TagOrPrcsrDrctv)
 			}
 			TE := pGT.Tagstack.Pop()
 			// println("Popt", i, "::", TE.Index(), TE.Tag())
