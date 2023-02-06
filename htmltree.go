@@ -54,12 +54,12 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// pTag.Depth  = pET.NrOpenTags
 		fmt.Printf("%s</%s>\n",
 			SU.GetIndent(0 /*pET.NrOpenTags*/), pTag.TagOrPrcsrDrctv)
-		/*
-			var TT lwdx.TagType
-			var ok bool
-			if TT, ok = xmltags.TagTypes[pTag.keynoun]; !ok {
-			}
-			pTag.TagType = TT
+		/* old code
+		var TT lwdx.TagType
+		var ok bool
+		if TT, ok = xmltags.TagTypes[pTag.keynoun]; !ok {
+		}
+		pTag.TagType = TT
 		*/
 		return pTag, nil
 
@@ -70,17 +70,17 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// pTag.Keytext  = pTag.AsString
 		// println("AFTER TrimSpace<<" + pRT.string1 + ">>")
 
-		// FIXME:20 FIXME
-		/*
-			if pTag.AsString == "" {
-				// ilog.Printf("PCDATA is all whitespace: \n")
-				// DO NOTHING
-				// NIL IT OUT
-				// NOTE:530 This may do weird things to elements
-				// that have text content models.
-				println("WARNING: Got an all-whitespace xml.CharData")
-				return nil, nil
-			} */
+		// FIXME
+		/* old code
+		if pTag.AsString == "" {
+			// ilog.Printf("PCDATA is all whitespace: \n")
+			// DO NOTHING
+			// NIL IT OUT
+			// NOTE This may do weird things to elements
+			// that have text content models.
+			println("WARNING: Got an all-whitespace xml.CharData")
+			return nil, nil
+		} */
 		// fmt.Printf("%s(cdata)|%s|\n",
 		// 	SU.GetIndent(0/*pET.NrOpenTags*/), pTag.AsString)
 		// !! pTag.TagSummary = lwdx.TTinline
@@ -116,91 +116,91 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 func NewGTokenFromHtmlToken(inT html.Token) (outT *gtoken.GToken, e error) {
 
 	return nil, nil
-	/*
-		outT = new(gxml.GToken)
+	/* old code
+	outT = new(gxml.GToken)
 
-		var TT   html.TokenType
-		var Str  string
-		var Atts []html.Attribute
-		TT = inT.Type
-		Str = inT.Data
-		Atts = inT.Attr
+	var TT   html.TokenType
+	var Str  string
+	var Atts []html.Attribute
+	TT = inT.Type
+	Str = inT.Data
+	Atts = inT.Attr
 
-		var isTagType = (
-			TT == html.StartTagToken ||
-			TT == html.EndTagToken ||
-			TT == html.SelfClosingTagToken)
-		var isTextType = (
-			TT == html.TextToken ||
-			TT == html.CommentToken ||
-			TT == html.DoctypeToken)
+	var isTagType = (
+		TT == html.StartTagToken ||
+		TT == html.EndTagToken ||
+		TT == html.SelfClosingTagToken)
+	var isTextType = (
+		TT == html.TextToken ||
+		TT == html.CommentToken ||
+		TT == html.DoctypeToken)
 
-		if isTagType {
-			outT.Keynoun = Str
-			var slash1, slash2 string
-			if TT == html.EndTagToken { slash1 = "/" }
-			if TT == html.SelfClosingTagToken { slash2 = "/" }
-			fmt.Printf("HtmlTag: <%s%s%s> @<%+v> \n", slash1, Str, slash2, Atts)
-		} else if isTextType {
-			fmt.Printf("Html text: |%s| \n", Str)
-		} else {
-			panic("gxml.html.Tagtree.L321")
+	if isTagType {
+		outT.Keynoun = Str
+		var slash1, slash2 string
+		if TT == html.EndTagToken { slash1 = "/" }
+		if TT == html.SelfClosingTagToken { slash2 = "/" }
+		fmt.Printf("HtmlTag: <%s%s%s> @<%+v> \n", slash1, Str, slash2, Atts)
+	} else if isTextType {
+		fmt.Printf("Html text: |%s| \n", Str)
+	} else {
+		panic("gxml.html.Tagtree.L321")
+	}
+
+	switch TT {
+
+	case html.StartTagToken: // xml.StartElement:
+		outT.GTagTokType = "SE"
+		outT.GTag = *new(gxml.GTag)
+		outT.GTag.Name.Local = Str
+		outT.AsString = outT.GTag.String() // include "<" and ">"
+		return outT, nil
+
+	case html.EndTagToken: // xml.EndElement:
+		outT.GTagTokType = "EE"
+		outT.AsString = "</" + outT.Keynoun + ">"
+		return outT, nil
+
+	case html.SelfClosingTagToken: // xml.EndElement:
+		outT.GTagTokType = "SC"
+		outT.AsString = "<" + outT.Keynoun + "/>"
+		return outT, nil
+
+	case html.TextToken: // xml.CharData: // type CharData []byte
+		outT.GTagTokType = "CD"
+		outT.AsString = Str
+		outT.Keynoun  = outT.AsString
+		// println("AFTER TrimSpace<<" + pRT.string1 + ">>")
+		if outT.AsString == "" {
+			// ilog.Printf("PCDATA is all whitespace: \n")
+			// DO NOTHING
+			// NIL IT OUT
+			// NOTE:540 This may do weird things to elements
+			// that have text content models.
+			println("WARNING: Got an all-whitespace xml.CharData")
+			return nil, nil
 		}
+		fmt.Printf("%s(cdata)|%s|\n", SU.GetIndent(nOpenTags), outT.asString)
+		return outT, nil
 
-		switch TT {
+	case html.CommentToken: // xml.Comment: // type Comment []byte
+		outT.Type = "Cmt"
+		outT.keynoun = Str
+		outT.AsString = "<--" + outT.keynoun + "-->"
+		println("ok:", outT.asString) // " <--|" + pRT.string1 + "|--> \n")
+		return outT, nil
 
-		case html.StartTagToken: // xml.StartElement:
-			outT.GTagTokType = "SE"
-			outT.GTag = *new(gxml.GTag)
-			outT.GTag.Name.Local = Str
-			outT.AsString = outT.GTag.String() // include "<" and ">"
-			return outT, nil
+	case html.DoctypeToken: // xml.Directive: // type Directive []byte
+		outT.Type = "Dir"
+		s := Str
+		outT.AsString = "<!" + s + ">"
+		outT.keynoun, outT.keyargs = SU.SplitOffFirstWord(s) // pRT.string1)
+		println("ok:", outT.asString) // " <!|" + pRT.string1 + "|" + pRT.string2 + "|> \n")
+		return outT, nil
 
-		case html.EndTagToken: // xml.EndElement:
-			outT.GTagTokType = "EE"
-			outT.AsString = "</" + outT.Keynoun + ">"
-			return outT, nil
-
-		case html.SelfClosingTagToken: // xml.EndElement:
-			outT.GTagTokType = "SC"
-			outT.AsString = "<" + outT.Keynoun + "/>"
-			return outT, nil
-
-		case html.TextToken: // xml.CharData: // type CharData []byte
-			outT.GTagTokType = "CD"
-			outT.AsString = Str
-			outT.Keynoun  = outT.AsString
-			// println("AFTER TrimSpace<<" + pRT.string1 + ">>")
-			if outT.AsString == "" {
-				// ilog.Printf("PCDATA is all whitespace: \n")
-				// DO NOTHING
-				// NIL IT OUT
-				// NOTE:540 This may do weird things to elements
-				// that have text content models.
-				println("WARNING: Got an all-whitespace xml.CharData")
-				return nil, nil
-			}
-			fmt.Printf("%s(cdata)|%s|\n", SU.GetIndent(nOpenTags), outT.asString)
-			return outT, nil
-
-		case html.CommentToken: // xml.Comment: // type Comment []byte
-			outT.Type = "Cmt"
-			outT.keynoun = Str
-			outT.AsString = "<--" + outT.keynoun + "-->"
-			println("ok:", outT.asString) // " <--|" + pRT.string1 + "|--> \n")
-			return outT, nil
-
-		case html.DoctypeToken: // xml.Directive: // type Directive []byte
-			outT.Type = "Dir"
-			s := Str
-			outT.AsString = "<!" + s + ">"
-			outT.keynoun, outT.keyargs = SU.SplitOffFirstWord(s) // pRT.string1)
-			println("ok:", outT.asString) // " <!|" + pRT.string1 + "|" + pRT.string2 + "|> \n")
-			return outT, nil
-
-		default:
-			outT.Type = "ERR"
-			return nil, fmt.Errorf("Unrecognized token type<%T> for: %+v", inT, inT)
-		}
+	default:
+		outT.Type = "ERR"
+		return nil, fmt.Errorf("Unrecognized token type<%T> for: %+v", inT, inT)
+	}
 	*/
 }

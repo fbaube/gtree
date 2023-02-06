@@ -74,10 +74,10 @@ func (T *GTree) EchoTo(w io.Writer) {
 }
 
 func (et GTree) String() string {
-	return "GTree!" // /* "dbg." + */ et.String()
+	return "GTree!" // et.String()
 }
 
-/*
+/* old code, maybe can be used
 // Echo implements Markupper.
 // TODO This func is probably actually a good def for String().
 // TODO Extract from this a GTag.String(), to use in CLI cmd xmltokens .

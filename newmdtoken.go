@@ -2,7 +2,7 @@ package gtree
 
 import "github.com/fbaube/gtoken"
 
-/*
+/* old code
 
 func NewGTagFromMDtoken(M MD.Token) (*GTag, error) {
 	switch mdtok := M.(type) {
@@ -111,13 +111,13 @@ func EndTagMD(tag string) *GTag {
 func CDataTagMD(content string) *GTag {
 	var pTag = new(GTag)
 	pTag.TTType = gtoken.TT_type_CDATA
-	/*
-		pTag.AsString = S.TrimSpace(content)
-		pTag.Keyword = pTag.AsString
-		if pTag.AsString == "" {
-			println("WARNING: Got an all-whitespace xml.CharData")
-			return nil
-		}
+	/* old code
+	pTag.AsString = S.TrimSpace(content)
+	pTag.Keyword = pTag.AsString
+	if pTag.AsString == "" {
+		println("WARNING: Got an all-whitespace xml.CharData")
+		return nil
+	}
 	*/
 	return pTag
 }

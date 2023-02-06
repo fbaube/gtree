@@ -4,7 +4,7 @@ package gtree
 // github.com/rhinoman/go-commonmark
 // github.com/rhinoman/go-commonmark
 
-/*
+/* old code
 
 func GetTitleFromMarkdownTokens(tokens []MD.Token) string {
 	if tokens == nil || len(tokens) == 0 {

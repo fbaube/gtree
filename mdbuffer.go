@@ -36,12 +36,12 @@ func init() {
 	mdnt[AST.KindCodeBlock] = "CodeBlock"
 	mdnt[AST.KindCodeSpan] = "CodeSpan"
 	// mdnt[AST.KindHTMLSpan] = "HtmlSpan"
-	/*
-		mdnt[AST.KindTable] = "Table"
-		mdnt[AST.KindTableCell] = "TblCell"
-		mdnt[AST.KindTableHead] = "TblHead"
-		mdnt[AST.KindTableBody] = "TblBody"
-		mdnt[AST.KindTableRow] = "TblRow"
+	/* old code
+	mdnt[AST.KindTable] = "Table"
+	mdnt[AST.KindTableCell] = "TblCell"
+	mdnt[AST.KindTableHead] = "TblHead"
+	mdnt[AST.KindTableBody] = "TblBody"
+	mdnt[AST.KindTableRow] = "TblRow"
 	*/
 }
 
@@ -56,7 +56,7 @@ func GTokenizeMDbuffer(inString string) (GTokzn []*gtoken.GToken, err error) {
 		defer MU.Outa("GTokenizeMDbuffer", tt)
 	}
 
-	// NOTE:80 BF v2 MD stuff
+	// NOTE BF v2 MD stuff
 	// Get the AST from BlackFriday
 	var theMD parser.Parser // BF2.Markdown
 	var RootBFnode AST.Node
@@ -144,11 +144,11 @@ func NewGTagFromBFnode(p AST.Node) *GTag {
 		var cbd = p.(*AST.CodeBlock)
 		println(DumpCdBlk(*cbd))
 		return pp
-		/*
-			case "Table", "TableCell", "TableHead", "TableBody", "TableRow":
-				var tcd = p.(*AST.TableCell)
-				println(DumpTableCell(*tcd))
-				return pp
+		/* old code
+		case "Table", "TableCell", "TableHead", "TableBody", "TableRow":
+			var tcd = p.(*AST.TableCell)
+			println(DumpTableCell(*tcd))
+			return pp
 		*/
 	case "BlockQuote":
 		return pp
@@ -230,7 +230,7 @@ func myBFnodeVisitor(N AST.Node, entering bool) AST.WalkStatus {
 	if !entering {
 		return AST.WalkContinue // GoToNext
 	}
-	// fmt.Printf("%s \n" /* SU.GetIndent(lvl), */, DumpBFnode(N, 0))
+	// fmt.Printf("%s \n",DumpBFnode(N, 0)) // SU.GetIndent(lvl)
 	return AST.WalkContinue // GoToNext
 }
 
@@ -239,14 +239,12 @@ func myBFnodeVisitor(N AST.Node, entering bool) AST.WalkStatus {
 // = (found object) =
 // ==================
 
-/*
+/* old code
 Type     string
 Literal  string      `json:",omitempty"`
 Attr     interface{} `json:"-"`
 Children []*ASTNode  `json:",omitempty"`
-*/
 
-/*
 func (p *ASTNode) DumpASTnode() string {
 
 for child := range p.Children { // p.FirstChild; child != nil; child = child.Next {
@@ -259,7 +257,7 @@ func myASTnodeVisitor(N *ASTnode, entering bool) BF.WalkStatus {
 	if !entering {
 		return BF.GoToNext
 	}
-	fmt.Printf("%s \n" /* SU.GetIndent(lvl), * /, DumpASTnode(N))
+	fmt.Printf("%s \n", DumpASTnode(N)) // SU.GetIndent(lvl)
 	return BF.GoToNext
 }
 */
@@ -285,8 +283,8 @@ func myGTagVisitor(N AST.Node, entering bool) AST.WalkStatus {
 	if !entering {
 		return AST.WalkContinue // GoToNext
 	}
-	fmt.Printf("%s \n" /* SU.GetIndent(lvl), */, DumpGTag(N))
-	return AST.WalkContinue // GoToNext
+	fmt.Printf("%s \n", DumpGTag(N)) // SU.GetIndent(lvl)
+	return AST.WalkContinue          // GoToNext
 }
 
 // =======================
@@ -297,12 +295,10 @@ func myGTagVisitor(N AST.Node, entering bool) AST.WalkStatus {
 // HeadingID    string // This might hold heading ID, if present
 // IsTitleblock bool   // Specifies whether it's a title block
 func DumpHdg(h AST.Heading) string {
-	/*
-		var ttl string
-		if h.IsTitleblock {
-			ttl = "IsTtl:"
-		}
-	*/
+	// var ttl string
+	// if h.IsTitleblock {
+	//    ttl = "IsTtl:"
+	// }
 	if h.Level == 0 { // && h.HeadingID == "" {
 		return ""
 	}
@@ -316,18 +312,18 @@ func DumpHdg(h AST.Heading) string {
 // RefLink   []byte   // If not nil, turns this list item into a footnote item and triggers different rendering
 // IsFootnotesList bool   // This is a list of footnotes
 func DumpList(L AST.List) string {
-	var tight /*, ftnts */ string
+	var tight string // ftnts
 	if L.IsTight {
 		tight = "IsTight:"
 	}
-	/*
-		if L.IsFootnotesList {
-			ftnts = "IsFtnts:"
-		}
-		if L.ListFlags == 0 && L.BulletChar == 0 &&
-			L.Delimiter == 0 && len(L.RefLink) == 0 {
-			return ""
-		}
+	/* old code
+	if L.IsFootnotesList {
+		ftnts = "IsFtnts:"
+	}
+	if L.ListFlags == 0 && L.BulletChar == 0 &&
+		L.Delimiter == 0 && len(L.RefLink) == 0 {
+		return ""
+	}
 	*/
 	return fmt.Sprintf("<List:%s%sBult:%c:Delim:%c:RefLink:%s> ",
 		// tight, ftnts, L.BulletChar, L.Delimiter, L.RefLink)
@@ -341,17 +337,17 @@ func DumpList(L AST.List) string {
 // FenceOffset int
 func DumpCdBlk(cb AST.CodeBlock) string {
 	return "CodeBlock?!?!"
-	/*
-		var fenced string
-		if cb.IsFenced {
-			fenced = "IsFenced"
-		}
-		if len(cb.Info) == 0 && cb.FenceChar == 0 &&
-			cb.FenceLength == 0 && cb.FenceOffset == 0 {
-			return ""
-		}
-		return fmt.Sprintf("<CdBlk:%s:ch:%c:len:%d:ofs:%d:Info:%s> ",
-			fenced, cb.FenceChar, cb.FenceLength, cb.FenceOffset, string(cb.Info))
+	/* old code
+	var fenced string
+	if cb.IsFenced {
+		fenced = "IsFenced"
+	}
+	if len(cb.Info) == 0 && cb.FenceChar == 0 &&
+		cb.FenceLength == 0 && cb.FenceOffset == 0 {
+		return ""
+	}
+	return fmt.Sprintf("<CdBlk:%s:ch:%c:len:%d:ofs:%d:Info:%s> ",
+		fenced, cb.FenceChar, cb.FenceLength, cb.FenceOffset, string(cb.Info))
 	*/
 }
 
@@ -361,23 +357,23 @@ func DumpCdBlk(cb AST.CodeBlock) string {
 // Footnote    *Node  // If footnote, a direct link to the FN Node, else nil.
 func DumpLink(L AST.Link) string {
 	return "Link?!?!"
-	/*
-		var isFN bool
-		isFN = (L.NoteID != 0) && (L.Footnote == nil)
-		if len(L.Destination) == 0 && len(L.Title) == 0 &&
-			L.NoteID == 0 && L.Footnote == nil {
-			return ""
-		}
-		if !isFN {
-			return fmt.Sprintf("<Link:Ttl:%s:Dest:%s> ",
-				string(L.Title), string(L.Destination))
-		}
-		return fmt.Sprintf("<FN-link:#%d:Ttl:%s:Dest:%s> ",
-			L.NoteID, string(L.Title), string(L.Destination))
+	/* old code
+	var isFN bool
+	isFN = (L.NoteID != 0) && (L.Footnote == nil)
+	if len(L.Destination) == 0 && len(L.Title) == 0 &&
+		L.NoteID == 0 && L.Footnote == nil {
+		return ""
+	}
+	if !isFN {
+		return fmt.Sprintf("<Link:Ttl:%s:Dest:%s> ",
+			string(L.Title), string(L.Destination))
+	}
+	return fmt.Sprintf("<FN-link:#%d:Ttl:%s:Dest:%s> ",
+		L.NoteID, string(L.Title), string(L.Destination))
 	*/
 }
 
-/*
+/* old code
 // IsHeader  bool       // This tells if it's under the header row
 // Align CellAlignFlags // This holds the value for align attribute
 func DumpTableCell(tc AST.TableCellData) string {

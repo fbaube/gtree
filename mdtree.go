@@ -55,16 +55,16 @@ func NewGTreeFromMarkdownFile(path FU.AbsFilePath) (pET *GTree, err error) {
 	if xhtml {
 		htmlFlags |= html.UseXHTML
 	}
-	/*
-		if smartypants {
-			htmlFlags |= html.Smartypants
-		}
-		if fractions {
-			htmlFlags |= html.SmartypantsFractions
-		}
-		if latexdashes {
-			htmlFlags |= html.SmartypantsLatexDashes
-		}
+	/* old code
+	if smartypants {
+		htmlFlags |= html.Smartypants
+	}
+	if fractions {
+		htmlFlags |= html.SmartypantsFractions
+	}
+	if latexdashes {
+		htmlFlags |= html.SmartypantsLatexDashes
+	}
 	*/
 	title = ""
 	if page {
@@ -87,14 +87,14 @@ func NewGTreeFromMarkdownFile(path FU.AbsFilePath) (pET *GTree, err error) {
 	output = MD.ToHTML([]byte(theContent), parser, renderer)
 	// output the result
 	var out *os.File
-	/*
-		if len(args) == 2 {
-			if out, err = os.Create(args[1]); err != nil {
-				fmt.Fprintf(os.Stderr, "Error creating %s: %v", args[1], err)
-				os.Exit(-1)
-			}
-			defer out.Close()
-		} else { */
+	/* old code
+	if len(args) == 2 {
+		if out, err = os.Create(args[1]); err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating %s: %v", args[1], err)
+			os.Exit(-1)
+		}
+		defer out.Close()
+	} else { */
 	out = os.Stdout
 	// }
 	if _, err = out.Write(output); err != nil {
@@ -102,23 +102,22 @@ func NewGTreeFromMarkdownFile(path FU.AbsFilePath) (pET *GTree, err error) {
 		os.Exit(-1)
 	}
 
-	/*
+	/* old code
+	md := MD.New(
+		MD.HTML(true),
+		MD.Tables(true),
+		MD.Linkify(true),
+		MD.Typographer(false),
+		MD.XHTMLOutput(xhtml),
+	)
+	tokens := md.Parse([]byte(theContent))
+	title = GetTitleFromMarkdownTokens(tokens)
+	println("==> Got MD title:", title)
 
-		md := MD.New(
-			MD.HTML(true),
-			MD.Tables(true),
-			MD.Linkify(true),
-			MD.Typographer(false),
-			MD.XHTMLOutput(xhtml),
-		)
-		tokens := md.Parse([]byte(theContent))
-		title = GetTitleFromMarkdownTokens(tokens)
-		println("==> Got MD title:", title)
-
-		pET, e = NewGTreeFromMarkdownTokens(tokens, theContent)
-		if e != nil {
-			return nil, errors.Wrap(e, "gxml.GTree.NewFromXmlFile.newFromBuffer")
-		}
+	pET, e = NewGTreeFromMarkdownTokens(tokens, theContent)
+	if e != nil {
+		return nil, errors.Wrap(e, "gxml.GTree.NewFromXmlFile.newFromBuffer")
+	}
 
 	*/
 
