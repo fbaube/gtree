@@ -26,32 +26,41 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 	case gtoken.TT_type_ELMNT:
 		// pTag.Depth = NrOpenTags
 		// NrOpenTags++
-		var TT lwdx.TagSummary
-		var ok bool
-		if TT, ok = lwdx.TagInfo[pTag.GToken.GName.Local]; !ok {
-			L.L.Dbg("GToken: %+v", inGTkn)
-			// L.L.Dbg("GTag: %+v", *pTag)
-			if pTag.TagOrPrcsrDrctv == "" {
-				L.L.Warning("Missing tag")
-			} else {
-				L.L.Warning("Unrecognized tag: <" + pTag.TagOrPrcsrDrctv + ">")
-			}
-			// TODO: reinstate this next error, and change the above "ilog"
-			//      to "elong", when we can simply warn for DITA 1.3 tags
-			// return pTag, errors.New("Unrecognized tag: <" + pTag.Keytext + ">")
+		// var TT lwdx.TagSummary
+		var pTE *lwdx.TagalogEntry
+
+		var theTag string
+		theTag = pTag.GToken.GName.Local
+
+		// if p,ok = lwdx.TagInfo[theTag]; !ok {
+		pTE = lwdx.GetTEbyTagAndMarkupType(theTag, pTag.GToken.MarkupType)
+		// if found OK
+		if pTE != nil {
+			pTag.TagalogEntry = pTE
+			return pTag, nil
 		}
-		pTag.TagSummary = TT
+		L.L.Dbg("GToken: %+v", inGTkn)
+		// L.L.Dbg("GTag: %+v", *pTag)
+		if pTag.TagOrPrcsrDrctv == "" {
+			L.L.Warning("Missing tag")
+		} else {
+			L.L.Warning("Unrecognized tag: <" + pTag.TagOrPrcsrDrctv + ">")
+		}
+		// TODO: We will need an error here: reinstate this next error.
+		// return pTag, errors.New("Unrecognized tag: <" + pTag.Keytext + ">")
 		return pTag, nil
 
 	case gtoken.TT_type_ENDLM:
 		// NrOpenTags--
 		// pTag.Depth = NrOpenTags
-		var TT lwdx.TagSummary
-		var ok bool
-		if TT, ok = lwdx.TagInfo[pTag.TagOrPrcsrDrctv]; !ok {
+		// var TT lwdx.TagSummary
+		var pTE *lwdx.TagalogEntry
+		theTag := pTag.GToken.GName.Local
+		pTE = lwdx.GetTEbyTagAndMarkupType(theTag, pTag.GToken.MarkupType)
+		if pTE == nil {
 			// TODO
 		}
-		pTag.TagSummary = TT
+		pTag.TagalogEntry = pTE
 		return pTag, nil
 
 	case gtoken.TT_type_PINST:

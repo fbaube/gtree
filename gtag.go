@@ -45,8 +45,8 @@ type GTag struct {
 	// i.e. "SE", "EE" in LwDITA, HTML5, XML.
 	// MatchingTagsIndex int
 
-	// TODO: Should TagSummary be moved elsewhere ?
-	lwdx.TagSummary
+	// TODO: Should TagalogEntry be moved elsewhere ?
+	*lwdx.TagalogEntry
 	// EntityIsParameter is a bool field used for XML ENTITYs only.
 	// It indicates whether the entity defined using a "%" or not.
 	// This distinguishes a parameter/DTD entity from a general/data
@@ -72,8 +72,10 @@ type GTag struct {
 // in multiple schemata but with differing values for block/inline.
 // .
 func (p *GTag) IsBlock() bool {
-	return p.TagSummary.LwditaMode == "BLOCK" ||
-		p.TagSummary.Html5Mode == "BLOCK"
+	fmt.Printf("gtree/gtag:L76")
+	return true
+	//return p.TagSummary.LwditaMode == "BLOCK" ||
+	//	p.TagSummary.Html5Mode == "BLOCK"
 }
 
 // GRootTag makes sure that assignments to/from a root node are explicit.
@@ -108,7 +110,7 @@ func (p GTag) String() string {
 	}
 	var s = p.GToken.Echo() +
 		// fmt.Sprintf(" [d%d:%d] ", p.Depth, p.MatchingTagsIndex) +
-		fmt.Sprintf(" [d%d] %s", p.Depth, sBlk) + p.TagSummary.String()
+		fmt.Sprintf(" [d%d] %s", p.Depth, sBlk) + p.TagalogEntry.String()
 	// p.Nord.String()
 	return s
 }

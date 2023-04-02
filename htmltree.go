@@ -23,6 +23,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 	var TS string
 	var GT *gtoken.GToken
 	GT, e = NewGTokenFromHtmlToken(T)
+	GT.MarkupType = SU.MU_type_HTML
 
 	switch GT.TTType {
 
@@ -112,7 +113,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 	}
 }
 
-// NewGTokenFromHtmlToken does not recognise and return Processing Instrucitons !
+// NewGTokenFromHtmlToken does not recognise and return Processing Instructions !
 func NewGTokenFromHtmlToken(inT html.Token) (outT *gtoken.GToken, e error) {
 
 	return nil, nil
