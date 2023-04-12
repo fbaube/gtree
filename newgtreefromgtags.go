@@ -3,8 +3,8 @@ package gtree
 // "github.com/dimchansky/utfbom"
 
 import (
-	"github.com/fbaube/gtoken"
 	L "github.com/fbaube/mlog"
+	XU "github.com/fbaube/xmlutils"
 )
 
 // NewGTreeFromGTags is TBS.
@@ -26,7 +26,7 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 	for i, pTag = range GEs {
 		atRootLevel := (pGT.NrOpenTags == 0)
 
-		if pTag.TTType == gtoken.TT_type_ELMNT {
+		if pTag.TDType == XU.TD_type_ELMNT {
 			// println("SE.kwd:", pTag.XName.String())
 			pGT.Tagstack.Push(NewTagentry(pTag.XName.Echo(), i))
 			// println("Pušt", i, pTag.XName.String())
@@ -52,7 +52,7 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 				}
 			}
 		}
-		if pTag.TTType == gtoken.TT_type_ENDLM {
+		if pTag.TDType == XU.TD_type_ENDLM {
 			if atRootLevel {
 				L.L.Error("Unmatched top-level end tag <%s>", pTag.TagOrPrcsrDrctv)
 				panic("Unmatched top-level end tag: " + pTag.TagOrPrcsrDrctv)

@@ -6,6 +6,7 @@ import (
 	"github.com/fbaube/gtoken"
 	// "github.com/fbaube/lwdx"
 	SU "github.com/fbaube/stringutils"
+	XU "github.com/fbaube/xmlutils"
 	"golang.org/x/net/html"
 	// "github.com/dimchansky/utfbom"
 )
@@ -25,9 +26,9 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 	GT, e = NewGTokenFromHtmlToken(T)
 	GT.MarkupType = SU.MU_type_HTML
 
-	switch GT.TTType {
+	switch GT.TDType {
 
-	case gtoken.TT_type_ELMNT:
+	case XU.TD_type_ELMNT:
 		// Create new GTag. Input:
 		// type StartElement struct { Name Name ; Attr []Attr }
 		// type Attr struct { Name  Name ; Value string }
@@ -46,7 +47,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// pTag.TagType = TT
 		return pTag, nil
 
-	case gtoken.TT_type_ENDLM:
+	case XU.TD_type_ENDLM:
 		// pRT.pTag = nil // !!
 		// type EndElement struct { Name Name }
 		pTag.TagOrPrcsrDrctv = TS
@@ -64,7 +65,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		*/
 		return pTag, nil
 
-	case gtoken.TT_type_CDATA:
+	case XU.TD_type_CDATA:
 		// We seem to have trouble making a genuine copy of the string.
 		// So, take an extra step or two to make sure it is correct.
 		// pTag.AsString = TS
@@ -87,7 +88,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// !! pTag.TagSummary = lwdx.TTinline
 		return pTag, nil
 
-	case gtoken.TT_type_COMNT:
+	case XU.TD_type_COMNT:
 		pTag.TagOrPrcsrDrctv = TS
 		// pTag.AsString = "<--" + pTag.TagOrPrcsrDrctv + "-->"
 		// println("ok:", pTag.AsString) // " <--|" + pRT.string1 + "|--> \n")
@@ -96,7 +97,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
-	case gtoken.TT_type_DRCTV:
+	case XU.TD_type_DRCTV:
 		s := TS
 		// pTag.AsString = "<!" + s + ">"
 		pTag.TagOrPrcsrDrctv, pTag.Datastring = SU.SplitOffFirstWord(s) // pRT.string1)
@@ -107,7 +108,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		return pTag, nil
 
 	default:
-		pTag.TTType = gtoken.TT_type_ERROR
+		pTag.TDType = XU.TD_type_ERROR
 		// !! pTag.TagSummary = lwdx.TTblock
 		return nil, fmt.Errorf("Unrecognized token type<%T> for: %+v", T, T)
 	}

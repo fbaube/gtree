@@ -7,6 +7,7 @@ import (
 	"github.com/fbaube/lwdx"
 	// "github.com/dimchansky/utfbom"
 	L "github.com/fbaube/mlog"
+	XU "github.com/fbaube/xmlutils"
 )
 
 // NewGTagFromGToken embeds the GToken and processes it.
@@ -16,14 +17,14 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 	pTag = new(GTag)
 	pTag.GToken = inGTkn
 
-	if "" == inGTkn.TTType {
-		L.L.Info("NewGTagFromGToken: EMPTY TTType")
+	if "" == inGTkn.TDType {
+		L.L.Info("NewGTagFromGToken: EMPTY TDType")
 		return nil, nil
 	}
 
-	switch inGTkn.TTType {
+	switch inGTkn.TDType {
 
-	case gtoken.TT_type_ELMNT:
+	case XU.TD_type_ELMNT:
 		// pTag.Depth = NrOpenTags
 		// NrOpenTags++
 		// var TT lwdx.TagSummary
@@ -50,7 +51,7 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 		// return pTag, errors.New("Unrecognized tag: <" + pTag.Keytext + ">")
 		return pTag, nil
 
-	case gtoken.TT_type_ENDLM:
+	case XU.TD_type_ENDLM:
 		// NrOpenTags--
 		// pTag.Depth = NrOpenTags
 		// var TT lwdx.TagSummary
@@ -63,14 +64,14 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 		pTag.TagalogEntry = pTE
 		return pTag, nil
 
-	case gtoken.TT_type_PINST:
+	case XU.TD_type_PINST:
 		// !! pTag.TagSummary = lwdx.TTblock
 		// TODO: Attach this PI to its parent element in the GTree
 		// newNode = parentNode.NewKid("<?", myTarget)
 		// newNode.StringValue = myInst
 		return pTag, nil
 
-	case gtoken.TT_type_CDATA:
+	case XU.TD_type_CDATA:
 		if pTag.Echo() == "" {
 			// ilog.Printf("PCDATA is all whitespace: \n")
 			// DO NOTHING
@@ -83,7 +84,7 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 		// !! pTag.TagSummary = lwdx.TTinline
 		return pTag, nil
 
-	case gtoken.TT_type_COMNT:
+	case XU.TD_type_COMNT:
 		// TODO: Attach this Comment to its parent element in the GTree,
 		// which is in fact the first XML element that follows this XML
 		// comment. So, it should be done in a later pass.
@@ -92,29 +93,29 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
-	case gtoken.TT_type_DRCTV:
+	case XU.TD_type_DRCTV:
 		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
 	case "":
 		print(inGTkn.String())
-		pTag.TTType = gtoken.TT_type_ERROR
+		pTag.TDType = XU.TD_type_ERROR
 		// !! pTag.TagSummary = lwdx.TTblock
-		// println(fmt.Sprintf("NIL GToken.type<%s> for: %+v", inGTkn.TTType, inGTkn))
-		return nil, fmt.Errorf("NIL GToken.type<%s> for: %+v", inGTkn.TTType, inGTkn)
+		// println(fmt.Sprintf("NIL GToken.type<%s> for: %+v", inGTkn.TDType, inGTkn))
+		return nil, fmt.Errorf("NIL GToken.type<%s> for: %+v", inGTkn.TDType, inGTkn)
 
-	case gtoken.TT_type_DOCMT:
-		L.L.Dbg("Made GTag for GToken TTType <Doc>")
+	case XU.TD_type_DOCMT:
+		L.L.Dbg("Made GTag for GToken TDType <Doc>")
 		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
 	default:
 		print(inGTkn.String())
-		pTag.TTType = gtoken.TT_type_ERROR
+		pTag.TDType = XU.TD_type_ERROR
 		// !! pTag.TagSummary = lwdx.TTblock
 		println(fmt.Sprintf("Unrecognized GToken.type<%s> for: %+v",
-			inGTkn.TTType, inGTkn))
+			inGTkn.TDType, inGTkn))
 		return nil, fmt.Errorf("Unrecognized GToken.type<%s> for: %+v",
-			inGTkn.TTType, inGTkn)
+			inGTkn.TDType, inGTkn)
 	}
 }
