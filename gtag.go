@@ -8,6 +8,7 @@ import (
 	"github.com/fbaube/gtoken"
 	"github.com/fbaube/lwdx"
 	ON "github.com/fbaube/orderednodes"
+	XU "github.com/fbaube/xmlutils"
 )
 
 // GTag is a generic golang XML tag, used mainly for representing XML
@@ -34,7 +35,7 @@ type GTag struct {
 	// [GToken] includes Name and Attribute info for XML
 	// tags. For a simple tag that cannot be namespaced,
 	// such as a "tag" in Markdown, the tag name is in
-	// [GToken.GName.Local].
+	// [GToken.XName.Local].
 	//
 	// NOTE: For LwDITA's Markdown-XP, we could use
 	// the Attributes to store Pandoc-style attributes.
@@ -84,7 +85,7 @@ type GRootTag GTag
 // NewGTag initializes the node with parser results.
 func NewGTag(aNS, aName string) *GTag {
 	newGTag := new(GTag)
-	newGTag.GToken.GName = gtoken.GName{Space: aNS, Local: aName}
+	newGTag.GToken.XName = XU.XName{Space: aNS, Local: aName}
 	return newGTag
 }
 

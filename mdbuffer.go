@@ -6,6 +6,7 @@ import (
 	"github.com/fbaube/gtoken"
 	MU "github.com/fbaube/miscutils"
 	SU "github.com/fbaube/stringutils"
+	XU "github.com/fbaube/xmlutils"
 	AST "github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
@@ -109,7 +110,7 @@ func NewGTagTreeFromBFtree(p AST.Node) *GRootTag {
 // - gparse.GToken
 // which comprises:
 // - GTagTokType
-// - GName
+// - XName
 // - GAttList
 func NewGTagFromBFnode(p AST.Node) *GTag {
 	var NT AST.NodeType
@@ -125,7 +126,7 @@ func NewGTagFromBFnode(p AST.Node) *GTag {
 	switch NK.String() { // NT.String() {
 	case "Document":
 		println("START OF DOCUMENT")
-		pp.GName = *gtoken.NewGName("", "markdown")
+		pp.XName = *XU.NewXName("", "markdown")
 		return pp
 	case "List", "Item":
 		var lst = p.(*AST.List) // p.List
@@ -134,7 +135,7 @@ func NewGTagFromBFnode(p AST.Node) *GTag {
 	case "Heading":
 		var hdg = p.(*AST.Heading)
 		println(DumpHdg(*hdg))
-		pp.GName = *gtoken.NewGName("", fmt.Sprintf("H%d", hdg.Level))
+		pp.XName = *XU.NewXName("", fmt.Sprintf("H%d", hdg.Level))
 		return pp
 	case "Link", "Image":
 		var lnk = p.(*AST.Link)

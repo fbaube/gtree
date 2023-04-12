@@ -27,9 +27,9 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 		atRootLevel := (pGT.NrOpenTags == 0)
 
 		if pTag.TTType == gtoken.TT_type_ELMNT {
-			// println("SE.kwd:", pTag.GName.String())
-			pGT.Tagstack.Push(NewTagentry(pTag.GName.String(), i))
-			// println("Pušt", i, pTag.GName.String())
+			// println("SE.kwd:", pTag.XName.String())
+			pGT.Tagstack.Push(NewTagentry(pTag.XName.Echo(), i))
+			// println("Pušt", i, pTag.XName.String())
 			// pTag.Depth = pET.NrOpenTags
 			pGT.NrOpenTags++
 
@@ -42,10 +42,10 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 				} else {
 					// Problem
 					pGT.RootTagCount++
-					L.L.Error("Got another root element <%s>", pTag.GToken.GName)
-					println("==> Got second root element <", pTag.GToken.GName.String(),
+					L.L.Error("Got another root element <%s>", pTag.GToken.XName)
+					println("==> Got second root element <", pTag.GToken.XName.Echo(),
 						">: XML data file is a fragment")
-					if pTag.GName.String() != GEs[pGT.RootTagIndex].GName.String() {
+					if pTag.XName.Echo() != GEs[pGT.RootTagIndex].XName.Echo() {
 						pGT.RootTagsDiffer = true
 					}
 					// pXI.xmlContype = "Fragments"
@@ -59,10 +59,10 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 			}
 			TE := pGT.Tagstack.Pop()
 			// println("Popt", i, "::", TE.Index(), TE.Tag())
-			if TE.Tag() != pTag.GName.String() {
+			if TE.Tag() != pTag.XName.Echo() {
 				L.L.Error("Tag mismatch: |(start-tag)|%s|v|(end-tag)|%s|>",
-					TE.Tag(), pTag.GName.String())
-				panic("Bad tag stack: " + TE.Tag() + " v " + pTag.GName.String())
+					TE.Tag(), pTag.XName.Echo())
+				panic("Bad tag stack: " + TE.Tag() + " v " + pTag.XName.Echo())
 			}
 			pGT.NrOpenTags--
 			// Point Start and End at each other

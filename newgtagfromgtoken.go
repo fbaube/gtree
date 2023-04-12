@@ -30,7 +30,7 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 		var pTE *lwdx.TagalogEntry
 
 		var theTag string
-		theTag = pTag.GToken.GName.Local
+		theTag = pTag.GToken.XName.Local
 
 		// if p,ok = lwdx.TagInfo[theTag]; !ok {
 		pTE = lwdx.GetTEbyTagAndMarkupType(theTag, pTag.GToken.MarkupType)
@@ -55,7 +55,7 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 		// pTag.Depth = NrOpenTags
 		// var TT lwdx.TagSummary
 		var pTE *lwdx.TagalogEntry
-		theTag := pTag.GToken.GName.Local
+		theTag := pTag.GToken.XName.Local
 		pTE = lwdx.GetTEbyTagAndMarkupType(theTag, pTag.GToken.MarkupType)
 		if pTE == nil {
 			// TODO
