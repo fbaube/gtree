@@ -1,7 +1,7 @@
 package gtree
 
 import (
-	XU "github.com/fbaube/xmlutils"
+	CT "github.com/fbaube/ctoken"
 )
 
 /* old code
@@ -94,8 +94,8 @@ func NewGTagFromMDtoken(M MD.Token) (*GTag, error) {
 
 func StartTagMD(tag string) *GTag {
 	var pTag = new(GTag)
-	pTag.TDType = XU.TD_type_ELMNT
-	pTag.TagOrPrcsrDrctv = tag
+	pTag.TDType = CT.TD_type_ELMNT
+	pTag.Text = tag
 	// pTag.AsString = "<" + tag + ">"
 	// nOpenTags++
 	return pTag
@@ -103,8 +103,8 @@ func StartTagMD(tag string) *GTag {
 
 func EndTagMD(tag string) *GTag {
 	var pTag = new(GTag)
-	pTag.TDType = XU.TD_type_ENDLM
-	pTag.TagOrPrcsrDrctv = tag
+	pTag.TDType = CT.TD_type_ENDLM
+	pTag.Text = tag
 	// pTag.AsString = "</" + tag + ">"
 	// nOpenTags++
 	return pTag
@@ -112,7 +112,7 @@ func EndTagMD(tag string) *GTag {
 
 func CDataTagMD(content string) *GTag {
 	var pTag = new(GTag)
-	pTag.TDType = XU.TD_type_CDATA
+	pTag.TDType = CT.TD_type_CDATA
 	/* old code
 	pTag.AsString = S.TrimSpace(content)
 	pTag.Keyword = pTag.AsString

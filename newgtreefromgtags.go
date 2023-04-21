@@ -3,8 +3,8 @@ package gtree
 // "github.com/dimchansky/utfbom"
 
 import (
+	CT "github.com/fbaube/ctoken"
 	L "github.com/fbaube/mlog"
-	XU "github.com/fbaube/xmlutils"
 )
 
 // NewGTreeFromGTags is TBS.
@@ -26,9 +26,9 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 	for i, pTag = range GEs {
 		atRootLevel := (pGT.NrOpenTags == 0)
 
-		if pTag.TDType == XU.TD_type_ELMNT {
+		if pTag.TDType == CT.TD_type_ELMNT {
 			// println("SE.kwd:", pTag.XName.String())
-			pGT.Tagstack.Push(NewTagentry(pTag.XName.Echo(), i))
+			pGT.Tagstack.Push(NewTagentry(pTag.CName.Echo(), i))
 			// println("Pušt", i, pTag.XName.String())
 			// pTag.Depth = pET.NrOpenTags
 			pGT.NrOpenTags++
@@ -42,27 +42,27 @@ func NewGTreeFromGTags(GEs []*GTag) (pGT *GTree, err error) {
 				} else {
 					// Problem
 					pGT.RootTagCount++
-					L.L.Error("Got another root element <%s>", pTag.GToken.XName)
-					println("==> Got second root element <", pTag.GToken.XName.Echo(),
+					L.L.Error("Got another root element <%s>", pTag.GToken.CName)
+					println("==> Got second root element <", pTag.GToken.CName.Echo(),
 						">: XML data file is a fragment")
-					if pTag.XName.Echo() != GEs[pGT.RootTagIndex].XName.Echo() {
+					if pTag.CName.Echo() != GEs[pGT.RootTagIndex].CName.Echo() {
 						pGT.RootTagsDiffer = true
 					}
 					// pXI.xmlContype = "Fragments"
 				}
 			}
 		}
-		if pTag.TDType == XU.TD_type_ENDLM {
+		if pTag.TDType == CT.TD_type_ENDLM {
 			if atRootLevel {
-				L.L.Error("Unmatched top-level end tag <%s>", pTag.TagOrPrcsrDrctv)
-				panic("Unmatched top-level end tag: " + pTag.TagOrPrcsrDrctv)
+				L.L.Error("Unmatched top-level end tag <%s>", pTag.Text)
+				panic("Unmatched top-level end tag: " + pTag.Text)
 			}
 			TE := pGT.Tagstack.Pop()
 			// println("Popt", i, "::", TE.Index(), TE.Tag())
-			if TE.Tag() != pTag.XName.Echo() {
+			if TE.Tag() != pTag.CName.Echo() {
 				L.L.Error("Tag mismatch: |(start-tag)|%s|v|(end-tag)|%s|>",
-					TE.Tag(), pTag.XName.Echo())
-				panic("Bad tag stack: " + TE.Tag() + " v " + pTag.XName.Echo())
+					TE.Tag(), pTag.CName.Echo())
+				panic("Bad tag stack: " + TE.Tag() + " v " + pTag.CName.Echo())
 			}
 			pGT.NrOpenTags--
 			// Point Start and End at each other

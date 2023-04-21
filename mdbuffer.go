@@ -3,10 +3,10 @@ package gtree
 import (
 	"fmt"
 
+	CT "github.com/fbaube/ctoken"
 	"github.com/fbaube/gtoken"
 	MU "github.com/fbaube/miscutils"
 	SU "github.com/fbaube/stringutils"
-	XU "github.com/fbaube/xmlutils"
 	AST "github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
@@ -119,14 +119,14 @@ func NewGTagFromBFnode(p AST.Node) *GTag {
 	NK = p.Kind()
 	var pp *GTag
 	pp = new(GTag)
-	pp.TDType = XU.TD_type_ELMNT
+	pp.TDType = CT.TD_type_ELMNT
 	sKids := ListKids(p)
 	fmt.Printf("New GTag :: type %d :: kind %d :: %s \n", NT, NK, sKids)
 
 	switch NK.String() { // NT.String() {
 	case "Document":
 		println("START OF DOCUMENT")
-		pp.XName = *XU.NewXName("", "markdown")
+		pp.CName = *CT.NewCName("", "markdown")
 		return pp
 	case "List", "Item":
 		var lst = p.(*AST.List) // p.List
@@ -135,7 +135,7 @@ func NewGTagFromBFnode(p AST.Node) *GTag {
 	case "Heading":
 		var hdg = p.(*AST.Heading)
 		println(DumpHdg(*hdg))
-		pp.XName = *XU.NewXName("", fmt.Sprintf("H%d", hdg.Level))
+		pp.CName = *CT.NewCName("", fmt.Sprintf("H%d", hdg.Level))
 		return pp
 	case "Link", "Image":
 		var lnk = p.(*AST.Link)

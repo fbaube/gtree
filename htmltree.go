@@ -5,8 +5,8 @@ import (
 
 	"github.com/fbaube/gtoken"
 	// "github.com/fbaube/lwdx"
+	CT "github.com/fbaube/ctoken"
 	SU "github.com/fbaube/stringutils"
-	XU "github.com/fbaube/xmlutils"
 	"golang.org/x/net/html"
 	// "github.com/dimchansky/utfbom"
 )
@@ -28,17 +28,17 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 
 	switch GT.TDType {
 
-	case XU.TD_type_ELMNT:
+	case CT.TD_type_ELMNT:
 		// Create new GTag. Input:
 		// type StartElement struct { Name Name ; Attr []Attr }
 		// type Attr struct { Name  Name ; Value string }
 		// pTag.GStartTag = *new(gparse.GToken.GName)
 		// pTag.GStartTag.Name.Local = TS
-		pTag.TagOrPrcsrDrctv = TS
+		pTag.Text = TS
 		// pTag.AsString = pTag.GStartTag.String() // include "<" and ">"
 		// pTag.Depth  = pET.NrOpenTags
 		fmt.Printf("cnvt: %s<%s>\n",
-			SU.GetIndent(0 /*pET.NrOpenTags*/), pTag.TagOrPrcsrDrctv)
+			SU.GetIndent(0 /*pET.NrOpenTags*/), pTag.Text)
 		// pET.NrOpenTags++
 		// if TT, ok = lwdx.TagTypes[pTag.keynoun]; !ok {
 		// elog.Printf("Unrecognized tag: <" + pTag.keynoun + ">")
@@ -47,15 +47,15 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// pTag.TagType = TT
 		return pTag, nil
 
-	case XU.TD_type_ENDLM:
+	case CT.TD_type_ENDLM:
 		// pRT.pTag = nil // !!
 		// type EndElement struct { Name Name }
-		pTag.TagOrPrcsrDrctv = TS
-		// pTag.AsString = "</" + pTag.TagOrPrcsrDrctv + ">"
+		pTag.Text = TS
+		// pTag.AsString = "</" + pTag.Text + ">"
 		// pET.NrOpenTags--
 		// pTag.Depth  = pET.NrOpenTags
 		fmt.Printf("%s</%s>\n",
-			SU.GetIndent(0 /*pET.NrOpenTags*/), pTag.TagOrPrcsrDrctv)
+			SU.GetIndent(0 /*pET.NrOpenTags*/), pTag.Text)
 		/* old code
 		var TT lwdx.TagType
 		var ok bool
@@ -65,7 +65,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		*/
 		return pTag, nil
 
-	case XU.TD_type_CDATA:
+	case CT.TD_type_CDATA:
 		// We seem to have trouble making a genuine copy of the string.
 		// So, take an extra step or two to make sure it is correct.
 		// pTag.AsString = TS
@@ -88,19 +88,20 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		// !! pTag.TagSummary = lwdx.TTinline
 		return pTag, nil
 
-	case XU.TD_type_COMNT:
-		pTag.TagOrPrcsrDrctv = TS
-		// pTag.AsString = "<--" + pTag.TagOrPrcsrDrctv + "-->"
+	case CT.TD_type_COMNT:
+		pTag.Text = TS
+		// pTag.AsString = "<--" + pTag.Text + "-->"
 		// println("ok:", pTag.AsString) // " <--|" + pRT.string1 + "|--> \n")
 		// newNode = parentNode.NewKid("<!", "--")
 		// newNode.StringValue = tokenString
 		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
-	case XU.TD_type_DRCTV:
-		s := TS
+	case CT.TD_type_DRCTV:
+		// !! s := TS
 		// pTag.AsString = "<!" + s + ">"
-		pTag.TagOrPrcsrDrctv, pTag.Datastring = SU.SplitOffFirstWord(s) // pRT.string1)
+		panic("gtree/htmltree.go:L103")
+		// !! pTag.Text, pTag.Datastring = SU.SplitOffFirstWord(s) // pRT.string1)
 		// println("ok:", pTag.AsString) // " <!|" + pRT.string1 + "|" + pRT.string2 + "|> \n")
 		// newNode = parentNode.NewKid("<!", "DOCTYPE")
 		// newNode.StringValue = tokenString
@@ -108,7 +109,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 		return pTag, nil
 
 	default:
-		pTag.TDType = XU.TD_type_ERROR
+		pTag.TDType = CT.TD_type_ERROR
 		// !! pTag.TagSummary = lwdx.TTblock
 		return nil, fmt.Errorf("Unrecognized token type<%T> for: %+v", T, T)
 	}

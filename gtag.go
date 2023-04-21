@@ -5,10 +5,11 @@ package gtree
 import (
 	"fmt"
 	// "github.com/fbaube/gparse"
+	CT "github.com/fbaube/ctoken"
 	"github.com/fbaube/gtoken"
 	"github.com/fbaube/lwdx"
 	ON "github.com/fbaube/orderednodes"
-	XU "github.com/fbaube/xmlutils"
+	// XU "github.com/fbaube/xmlutils"
 )
 
 // GTag is a generic golang XML tag, used mainly for representing XML
@@ -85,7 +86,7 @@ type GRootTag GTag
 // NewGTag initializes the node with parser results.
 func NewGTag(aNS, aName string) *GTag {
 	newGTag := new(GTag)
-	newGTag.GToken.XName = XU.XName{Space: aNS, Local: aName}
+	newGTag.GToken.CName = CT.CName{Space: aNS, Local: aName}
 	return newGTag
 }
 
