@@ -13,7 +13,6 @@ import (
 	MD "github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
-	"github.com/pkg/errors"
 	// "github.com/dimchansky/utfbom"
 )
 
@@ -37,7 +36,7 @@ func NewGTreeFromMarkdownFile(path FU.AbsFilePath) (pET *GTree, err error) {
 
 	bb, e = os.ReadFile(string(path))
 	if e != nil {
-		return nil, errors.Wrapf(e, "gxml.GTree.NewGTreeFromMarkdownFile.ReadFile<%s>", path)
+		return nil, fmt.Errorf("gxml.GTree.NewGTreeFromMarkdownFile.ReadFile<%w>", e)
 	}
 	// Keep an extra copy around so that we can read and re-read the entire file.
 	var theContent = string(MU.DupeByteSlice(bb))
