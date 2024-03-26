@@ -43,9 +43,9 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 		L.L.Dbg("GToken: %+v", inGTkn)
 		// L.L.Dbg("GTag: %+v", *pTag)
 		if pTag.Text == "" {
-			L.L.Warning("Missing tag")
+			L.L.Warning("GTag missing tag")
 		} else {
-			L.L.Warning("Unrecognized tag: <" + pTag.Text + ">")
+			L.L.Warning("GTag unrecognized tag: <" + pTag.Text + ">")
 		}
 		// TODO: We will need an error here: reinstate this next error.
 		// return pTag, errors.New("Unrecognized tag: <" + pTag.Keytext + ">")
