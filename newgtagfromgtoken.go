@@ -40,7 +40,7 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 			pTag.TagalogEntry = pTE
 			return pTag, nil
 		}
-		L.L.Dbg("GToken: %+v", inGTkn)
+		L.L.Debug("GToken: %+v", inGTkn)
 		// L.L.Dbg("GTag: %+v", *pTag)
 		if pTag.Text == "" {
 			L.L.Warning("GTag missing tag")
@@ -105,7 +105,7 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 		return nil, fmt.Errorf("NIL GToken.type<%s> for: %+v", inGTkn.TDType, inGTkn)
 
 	case CT.TD_type_DOCMT:
-		L.L.Dbg("Made GTag for GToken TDType <Doc>")
+		L.L.Debug("Made GTag for GToken TDType <Doc>")
 		// !! pTag.TagSummary = lwdx.TTblock
 		return pTag, nil
 
