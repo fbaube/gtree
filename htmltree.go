@@ -24,7 +24,7 @@ func NewGTagFromHtmlToken(T html.Token) (pTag *GTag, e error) {
 	var TS string
 	var GT *gtoken.GToken
 	GT, e = NewGTokenFromHtmlToken(T)
-	GT.MarkupType = SU.MU_type_HTML
+	GT.Raw_type = SU.Raw_type_HTML
 
 	switch GT.TDType {
 
