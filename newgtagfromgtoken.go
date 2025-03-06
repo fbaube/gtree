@@ -40,7 +40,7 @@ func NewGTagFromGToken(inGTkn gtoken.GToken) (pTag *GTag, e error) {
 			pTag.TagalogEntry = pTE
 			return pTag, nil
 		}
-		L.L.Debug("GToken: %+v", inGTkn)
+		L.L.Debug("GToken: " + inGTkn.String())
 		// L.L.Dbg("GTag: %+v", *pTag)
 		if pTag.Text == "" {
 			L.L.Warning("GTag missing tag")
