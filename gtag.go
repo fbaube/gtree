@@ -8,7 +8,7 @@ import (
 	CT "github.com/fbaube/ctoken"
 	"github.com/fbaube/gtoken"
 	"github.com/fbaube/lwdx"
-	ON "github.com/fbaube/orderednodes"
+	NOrK "github.com/fbaube/nork"
 	// XU "github.com/fbaube/xmlutils"
 )
 
@@ -31,8 +31,8 @@ import (
 // For its kids it uses a linked list, not a slice.
 // .
 type GTag struct {
-	// Nord provides tree structure
-	ON.Nord
+	// Nork provides tree structure
+	NOrK.Nork
 	// [GToken] includes Name and Attribute info for XML
 	// tags. For a simple tag that cannot be namespaced,
 	// such as a "tag" in Markdown, the tag name is in
@@ -96,7 +96,11 @@ func (anE *GTag) NewKid(aNS, aName string) *GTag {
 	if anE == nil {
 		panic("NewKid got nil parent")
 	}
-	return anE.AddKid(NewGTag(aNS, aName)).(*GTag)
+	// return anE.AddKid(NewGTag(aNS,aName)) // .(*GTag)
+	var pGtag *GTag
+	pGtag = NewGTag(aNS,aName)
+	_ = anE.AddKid(&pGtag.Nork)
+	return pGtag
 }
 
 // Echo implements Markupper.

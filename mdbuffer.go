@@ -99,7 +99,7 @@ func NewGTagTreeFromBFtree(p AST.Node) *GRootTag {
 		if cc == nil {
 			panic("nil Kid")
 		}
-		pp.AddKid(cc)
+		pp.AddKid(&cc.Nork)
 	}
 	var pRoot *GRootTag
 	pRoot = (*GRootTag)(pp)
